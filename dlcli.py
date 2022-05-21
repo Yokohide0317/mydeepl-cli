@@ -117,7 +117,7 @@ def doc_main(args):
 def command_help(args):
     print(parser.parse_args([args.command, '--help']))
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(description="")
     subparsers = parser.add_subparsers()
 
@@ -146,3 +146,7 @@ if __name__ == "__main__":
     else:
         # 未知のサブコマンドの場合はヘルプを表示
         parser.print_help()
+    return
+
+if __name__ == "__main__":
+    main()

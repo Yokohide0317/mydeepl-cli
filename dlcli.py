@@ -14,10 +14,12 @@ class Mydeepl:
         if order == "init":
             pass
         elif order == "text":
+            self.trg_lang = "JA" if args.language == "EN" else "EN-US"
             self.text = " ".join(args.inp)
             self.auth_key = self.get_auth()
             self.translator = deepl.Translator(self.auth_key)
         elif order == "doc":
+            self.trg_lang = "JA" if args.language == "EN" else "EN-US"
             self.input_path = Path(args.inp)
             self.output_path = self.def_path()
             self.auth_key = self.get_auth()
@@ -52,14 +54,14 @@ class Mydeepl:
             translator.translate_document_from_filepath(
                 self.input_path,
                 self.output_path,
-                target_lang="JA"
+                target_lang=self.trg_lang
             )
 
             with open(self.input_path, "rb") as in_file, open(self.output_path, "wb") as out_file:
                 translator.translate_document(
                     in_file,
                     out_file,
-                    target_lang="JA"
+                    target_lang=self.trg_lang
                 )
 
         except deepl.DocumentTranslationException as error:
@@ -78,7 +80,7 @@ class Mydeepl:
 
     def trans_text(self): 
         translator = self.translator
-        result = translator.translate_text(str(self.text), target_lang="JA")
+        result = translator.translate_text(str(self.text), target_lang=self.trg_lang)
         return result
 
     def init_auth(self):
@@ -128,10 +130,12 @@ def main():
     # document
     parser_doc = subparsers.add_parser('doc', help='see `add -h`')
     parser_doc.add_argument("inp")
+    parser_doc.add_argument("-l", "--language", help="Choose input language.", choices=['JA', 'EN'], default="JA")
     parser_doc.set_defaults(handler=doc_main)
 
     # text
     parser_text = subparsers.add_parser("text", help='see `add -h`')
+    parser_text.add_argument("-l", "--language", help="Choose input language.", choices=['JA', 'EN'], default="JA")
     parser_text.add_argument("inp", nargs='*')
     parser_text.set_defaults(handler=text_main)
 
